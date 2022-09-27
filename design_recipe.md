@@ -1,4 +1,4 @@
-# {{TABLE NAME}} Model and Repository Classes Design Recipe
+# {{books}} Model and Repository Classes Design Recipe
 
 _Copy this recipe template to design and implement Model and Repository classes for a database table._
 
@@ -13,10 +13,10 @@ Otherwise, [follow this recipe to design and create the SQL schema for your tabl
 ```
 # EXAMPLE
 
-Table: students
+Table: books
 
 Columns:
-id | name | cohort_name
+id | title | author_name
 ```
 
 ## 2. Create Test SQL seeds
@@ -56,16 +56,16 @@ Usually, the Model class name will be the capitalised table name (single instead
 
 ```ruby
 # EXAMPLE
-# Table name: students
+# Table name: books
 
-# Model class
+# Model book
 # (in lib/student.rb)
-class Student
+class Book
 end
 
 # Repository class
 # (in lib/student_repository.rb)
-class StudentRepository
+class BookRepository
 end
 ```
 
@@ -80,10 +80,10 @@ Define the attributes of your Model class. You can usually map the table columns
 # Model class
 # (in lib/student.rb)
 
-class Student
+class books
 
   # Replace the attributes by your own columns.
-  attr_accessor :id, :name, :cohort_name
+  attr_accessor :id, :title, :author_name
 end
 
 # The keyword attr_accessor is a special Ruby feature
@@ -93,6 +93,11 @@ end
 # student = Student.new
 # student.name = 'Jo'
 # student.name
+
+book = Book.new
+book.id = 1
+book.title = 'James and the Giant Peach'
+book.author_name = 'Roald Dahl'
 ```
 
 *You may choose to test-drive this class, but unless it contains any more logic than the example above, it is probably not needed.*
@@ -105,12 +110,12 @@ Using comments, define the method signatures (arguments and return value) and wh
 
 ```ruby
 # EXAMPLE
-# Table name: students
+# Table name: books
 
 # Repository class
 # (in lib/student_repository.rb)
 
-class StudentRepository
+class BookRepository
 
   # Selecting all records
   # No arguments
@@ -132,15 +137,16 @@ class StudentRepository
 
   # Add more methods below for each operation you'd like to implement.
 
-  # def create(student)
-  # end
+  def create(book)
+  end
 
-  # def update(student)
-  # end
+  def update(book)
+  end
 
-  # def delete(student)
-  # end
+  def delete(student)
+  end
 end
+
 ```
 
 ## 6. Write Test Examples
@@ -155,32 +161,38 @@ These examples will later be encoded as RSpec tests.
 # 1
 # Get all students
 
-repo = StudentRepository.new
+repo = BookRepository.new
 
-students = repo.all
+books = repo.all
 
-students.length # =>  2
-
-students[0].id # =>  1
-students[0].name # =>  'David'
-students[0].cohort_name # =>  'April 2022'
-
-students[1].id # =>  2
-students[1].name # =>  'Anna'
-students[1].cohort_name # =>  'May 2022'
+books.length # => 5
+books.first.title # => "Nineteen Eighty-Four"
+books.last.title # => "The Age of Innocence"
 
 # 2
 # Get a single student
 
-repo = StudentRepository.new
+repo = BookRepository.new
 
-student = repo.find(1)
+book = repo.find(1)
 
-student.id # =>  1
-student.name # =>  'David'
-student.cohort_name # =>  'April 2022'
+book.id # =>  1
+book.title # =>  'Nineteen Eighty-Four'
+book.author_name # =>  'George Orwell'
 
-# Add more examples for each method
+# 3
+# Create a single student
+
+repo = BookRepository.new
+book = Book.new(6, "James and the Giant Peach", "Roald Dahl")
+repo.create(book)
+expect(repo.all.last.title).to eq 'James and the Giant Peach'
+
+# Delete a single student
+repo = BookRepository.new
+repo.delete(1)
+expect(repo.first.title).to eq 'Mrs Dalloway'
+
 ```
 
 Encode this example as a test.
