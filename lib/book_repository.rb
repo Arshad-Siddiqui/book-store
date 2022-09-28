@@ -13,8 +13,8 @@ class BookRepository
     books
   end
   def find(id)
-    sql = "SELECT * FROM books WHERE id = #{id}"
-    new_book = DatabaseConnection.exec_params(sql,[])[0]
+    sql = "SELECT * FROM books WHERE id = $1"
+    new_book = DatabaseConnection.exec_params(sql,[id])[0]
     book = Book.new
     book.id = new_book['id']
     book.title = new_book['title']
@@ -23,8 +23,8 @@ class BookRepository
   end
 
   def create(book)
-    sql = "INSERT INTO books (id, title, author_name) VALUES (#{book.id}, '#{book.title}', '#{book.author_name}')"
-    DatabaseConnection.exec_params(sql,[])
+    sql = "INSERT INTO books (id, title, author_name) VALUES ($1, $2, $3)"
+    DatabaseConnection.exec_params(sql,[book.id, book.title, book.author_name])
   end
 
   def update(id, key, value)
@@ -33,7 +33,7 @@ class BookRepository
   end
 
   def delete(id)
-    sql = "DELETE FROM books WHERE id = #{id}"
-    DatabaseConnection.exec_params(sql,[])
+    sql = "DELETE FROM books WHERE id = $1"
+    DatabaseConnection.exec_params(sql,[id])
   end
 end
